@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="generator" content="MarkBind 2.4.0">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MarkBind - User Guide: Authoring Contents</title>
+  <title>MarkBind - User Guide - Getting Started</title>
   <link rel="stylesheet" href="../markbind/css/bootstrap.min.css">
   <link rel="stylesheet" href="../markbind/css/bootstrap-vue.min.css">
   <link rel="stylesheet" href="../markbind/fontawesome/css/all.min.css">
@@ -50,8 +50,8 @@
         <div class="position-sticky position-top site-nav-spacer viewport-height-90 scrollable slim-scroll">
           <p><span class="lead"><strong>User Guide</strong></span></p>
           <ul class="px-0 site-nav-list">
-            <li class="mt-2"><a href="/markbind/userGuide/gettingStarted.html" class="site-nav__a">Getting Started</a></li>
-            <li class="mt-2"><a href="/markbind/userGuide/authoringContents.html" class="site-nav__a current">Authoring Contents</a>
+            <li class="mt-2"><a href="/markbind/userGuide/gettingStarted.html" class="site-nav__a current">Getting Started</a></li>
+            <li class="mt-2"><a href="/markbind/userGuide/authoringContents.html" class="site-nav__a">Authoring Contents</a>
               <ul class="pl-3 site-nav-list">
                 <li class="mt-2"><a href="/markbind/userGuide/addingPages.html" class="site-nav__a">Adding Pages</a></li>
                 <li class="mt-2"><a href="/markbind/userGuide/markBindSyntaxOverview.html" class="site-nav__a">MarkBind Syntax Overview</a></li>
@@ -87,84 +87,72 @@
       </nav>
       <div id="content-wrapper">
         <div></div>
-        <h1 id="authoring-contents">Authoring Contents<a class="fa fa-anchor" href="#authoring-contents"></a></h1>
-        <p><big><strong>Adding Pages</strong></big></p>
-        <blockquote>
-          <p><span></span></p>
-          <p><strong>It is easy to add files to a MarkBind site as any file inside the <tooltip content="The directory that contains all the project files. It is also the directory in which the `site.json` configuration file is located.">root directory</tooltip> becomes a part of the generated website.</strong></p>
+        <h1 id="getting-started">Getting Started<a class="fa fa-anchor" href="#getting-started"></a></h1>
+        <p><big><strong>Prerequisites</strong></big></p>
+        <div class="indented">
+          <p><span class="dimmed"><span aria-hidden="true" class="far fa-check-square"></span></span> a basic knowledge of <a href="https://www.markdownguide.org/basic-syntax/">Markdown</a> and <a href="https://www.w3schools.com/html/">HTML</a> syntax<br>
+            <span class="dimmed"><span aria-hidden="true" class="far fa-check-square"></span></span> a basic knowledge of running CLI commands<br>
+            <span class="dimmed"><span aria-hidden="true" class="far fa-check-square"></span></span> a recent version of <a href="https://www.npmjs.com/get-npm">npm</a> installed</p>
+        </div>
+        <p><big><strong>1. Install MarkBind</strong></big></p>
+        <p>Run the following command to install MarkBind.</p>
+        <pre><code class="hljs">$ npm install -g markbind-cli
+</code></pre>
+        <p>Next, run the command <code>markbind</code>. If MarkBind has been installed correctly, you should see the MarkBind ascii logo followed by a summary of MarkBind commands as the output.</p>
+        <pre><code class="hljs">$ markbind
+  __  __                  _      ____    _               _
+ |  \/  |   __ _   _ __  | | __ | __ )  (_)  _ __     __| |
+ | |\/| |  / _` | | '__| | |/ / |  _ \  | | | '_ \   / _` |
+ | |  | | | (_| | | |    |   &lt;  | |_) | | | | | | | | (_| |
+ |_|  |_|  \__,_| |_|    |_|\_\ |____/  |_| |_| |_|  \__,_|
+
+ v1.x.y
+Usage: ...
+</code></pre>
+        <p><big><strong>2. Initialize a new Project (or Start with an existing Project)</strong></big></p>
+        <tabs>
+
+          <tab header="Initializing a new project">
+            <p>Navigate into an empty directory and run the following command to initialize a skeletal MarkBind site in that directory. It will create several new files in the directory e.g., <code>index.md</code>, <code>site.json</code>.</p>
+            <pre><code class="hljs">$ markbind init
+</code></pre>
+            <div>
+              <box border-left-color="#00B0F0">
+                <p><span style="color: #00B0F0"><span aria-hidden="true" class="fas fa-lightbulb"></span></span>
+                  You can add the <code>--help</code> flag to any command to show the help screen. <br> e.g., <code>markbind init --help</code></p>
+              </box>
+            </div>
+          </tab>
+
+          <tab header="Starting with an existing project">
+            <p>Navigate to the project
+              <tooltip content="The directory that contains all the project files. It is also the directory in which the `site.json` configuration file is located.">root directory</tooltip>.</p>
+          </tab>
+        </tabs>
+        <p><big><strong>3. Preview the site</strong></big></p>
+        <p>Run the following command in the same directory. It will generate a website from your source files, start a web server, and open a
+          <trigger trigger="click" for="modal:quickStart-livePreview">live preview</trigger> of your site in your default Browser.</p>
+        <modal large="" title="Live Preview" id="modal:quickStart-livePreview">
+          <span>
+<span><strong><em>Live preview</em> is the regenerating the site upon any change to source files and reloading the updated site in the Browser</strong>.</span>
+          <p><span aria-hidden="true" class="fas fa-info-circle"></span> Live preview works for the following file types only: <code>css</code>, <code>.html</code>, <code>.md</code>,
+            <tooltip content="MarkBind file"><code>.mbd</code></tooltip>,
+            <tooltip content="MarkBind fragment"><code>.mbdf</code></tooltip>. Changes to <code>css</code> might may not be visible in the site until you do a manual refresh of the page.</p>
+          <p>Use <a href="/markbind/userGuide/cliCommands.html#serve-command">the <code>serve</code> command</a> to launch a live preview.</p>
           <p></p>
-        </blockquote>
-        <p><span class="indented">More info in: <span><span><a href="/markbind/userGuide/addingPages.html"><em>User Guide → Adding Pages</em></a></span></span>
           </span>
-        </p>
-        <p><big><strong>MarkBind Syntax Overview</strong></big></p>
-        <blockquote>
-          <p><span></span></p>
-          <p><strong>A MarkBind source file may contain a mix of several popular syntax schemes</strong> used in creating web pages. MarkBind source file can be as simple as basic Markdown, and you can use progressively more complicated syntax to create
-            progressively more sophisticated Web pages while optimizing other aspects such as content reuse.
-          </p>
-        </blockquote>
-        <p><span class="indented">More info in: <span><a href="/markbind/userGuide/markBindSyntaxOverview.html"><em>User Guide → MarkBind Syntax Overview</em></a></span></span>
-        </p>
-        <p><big><strong>Formatting Contents</strong></big></p>
-        <blockquote>
-          <p><span></span></p>
-          <p><strong>MarkBind supports a wide collection of Markdown-like basic content formatting syntax</strong> such as text stying, tables, lists, images, links, etc.</p>
-          <p></p>
-        </blockquote>
-        <p><span class="indented">More info in: <span><span><a href="/markbind/userGuide/formattingContents.html"><em>User Guide → Formatting Contents</em></a></span></span>
-          </span>
-        </p>
-        <p><big><strong>Using Components</strong></big></p>
-        <blockquote>
-          <p><span></span></p>
-          <p><strong>MarkBind provides a number of components</strong> (e.g., expandable panels, tabbed displays, navigation bars, etc.) that you can use to enhance the appearance/behavior of your pages.
-          </p>
-        </blockquote>
-        <p><span class="indented">More info in: <span><span><a href="/markbind/userGuide/usingComponents.html"><em>User Guide → Using Components</em></a></span></span>
-          </span>
-        </p>
-        <p><big><strong>Using HTML, JavaScript, CSS</strong></big></p>
-        <blockquote>
-          <p><span></span></p>
-          <p><strong>A MarkBind source file can contain a mixture of HTML, JavaScript, and CSS</strong> as a normal web page would.
-          </p>
-        </blockquote>
-        <p><span class="indented">More info in: <span><span><a href="/markbind/userGuide/usingHtmlJavaScriptCss.html"><em>User Guide → Using HTML, JavaScript, CSS</em></a></span></span>
-          </span>
-        </p>
-        <p><big><strong>Tweaking the Page Structure</strong></big></p>
-        <blockquote>
-          <p><span><strong>MarkBind offers several ways to easily tweak the overall structure of a page</strong>, for example, using headers, footers, scripts, or stylesheets.</span></p>
-        </blockquote>
-        <p><span class="indented">More info in: <span><span><a href="/markbind/userGuide/tweakingThePageStructure.html"><em>User Guide → Tweaking the Page Structure</em></a></span></span>
-          </span>
-        </p>
-        <p><big><strong>Reusing Contents</strong></big></p>
-        <blockquote>
-          <p><span></span></p>
-          <p><strong>MarkBind is highly-optimized for content reuse</strong>. It offers several mechanisms to provide readers with many variations of the content while minimizing duplication at source file level. As a result, instead of creating a one-size-fits-all
-            site, MarkBind can create a site in which readers can chart their own path of reading.
-          </p>
-        </blockquote>
-        <p><span class="indented">More info in: <span><span><a href="/markbind/userGuide/reusingContents.html"><em>User Guide → Reusing Contents</em></a></span></span>
-          </span>
-        </p>
-        <p><big><strong>Making the Site Searchable</strong></big></p>
-        <blockquote>
-          <p><span></span></p>
-          <p><strong>MarkBind comes with with an in-built <em>site search</em> facility</strong>. You can add a <a href="/markbind/userGuide/usingComponents.html#search-bar">Search Bar</a> component to your pages <span class="dimmed">(e.g., into the top navigation bar)</span>            to allow readers to search your website for keywords.
-          </p>
-        </blockquote>
-        <p><span class="indented">More info in: <span><span><a href="/markbind/userGuide/makingTheSiteSearchable.html"><em>User Guide → Making the Site Searchable</em></a></span></span>
-          </span>
-        </p>
+        </modal>
+        <pre><code class="hljs">$ markbind serve
+</code></pre>
+        <p>Do some changes to the <code>index.md</code> and save the file. The live preview in the Browser should update automatically to reflect your changes.</p>
+        <p>To stop the web server, go to the console running the <code>serve</code> command and press <kbd>CTRL</kbd> + <kbd>C</kbd> (or the equivalent in your OS).</p>
+        <p><big><strong>4. Next steps</strong></big></p>
+        <ol>
+          <li><strong>Update the content of your site</strong>. More info can be found in the <a href="/markbind/userGuide/authoringContents.html"><em>User Guide: Authoring Contents</em></a> section</li>
+          <li><strong>Deploy your site</strong>. More info can be found in the <a href="/markbind/userGuide/deployingTheSite.html"><em>User Guide: Deploying the Site</em></a> section.</li>
+        </ol>
         <div class="clearfix">
-          <p><span class="float-left"><b-btn variant="light" href="/userGuide/gettingStarted.html"><span><span aria-hidden="true" class="far fa-arrow-alt-circle-left"></span> <span>Getting Started</span></span>
-            </b-btn>
-            </span>
-          </p>
-          <p><span class="float-right"><b-btn variant="light" href="/userGuide/addingPages.html"><span><span>Adding Pages</span> <span aria-hidden="true" class="far fa-arrow-alt-circle-right"></span></span>
+          <p><span class="float-right"><b-btn variant="light" href="/userGuide/authoringContents.html"><span><span>Authoring Contents</span> <span aria-hidden="true" class="far fa-arrow-alt-circle-right"></span></span>
             </b-btn>
             </span>
           </p>
