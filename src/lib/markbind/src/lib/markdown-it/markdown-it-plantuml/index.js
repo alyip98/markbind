@@ -3,19 +3,23 @@ const crypto = require('crypto');
 const fs = require('fs');
 const tmp = require('tmp');
 const { exec } = require('child_process');
+const path = require('path');
 
 const JAR_PATH = `${__dirname}\\plantuml.jar`;
-const OUT_PATH = 'out';
+const OUT_PATH = path.resolve('_site', 'diagrams');
+const URL_PREFIX = path.join('{{baseUrl}}', 'diagrams');
 
 module.exports = function umlPlugin(md, options) {
   function generateSourceDefault(umlCode) {
     const hash = crypto.createHash('md5').update(umlCode).digest('hex');
-    const outputFilePath = `${OUT_PATH}/diagram-${hash}.png`;
+    const fileName = `diagram-${hash}.png`;
+    const outputFilePath = `${OUT_PATH}/${fileName}`;
+    const imgSrc = `${URL_PREFIX}/${fileName}`;
     const cmd = `java -jar "${JAR_PATH}" -pipe > "${outputFilePath}"`;
 
     // Skip generation if diagram already exists
     if (process.umlDiagrams.has(hash)) {
-      return outputFilePath;
+      return imgSrc;
     }
     process.umlDiagrams.add(hash);
     console.log('Generating diagram', hash);
@@ -46,7 +50,7 @@ module.exports = function umlPlugin(md, options) {
       }
     });
 
-    return outputFilePath;
+    return imgSrc;
   }
 
   // eslint-disable-next-line no-param-reassign
@@ -61,7 +65,11 @@ module.exports = function umlPlugin(md, options) {
 
   // Track generated diagrams
   process.umlDiagrams = new Set();
-  fs.readdirSync(OUT_PATH).forEach(val => process.umlDiagrams.add(val.split('diagram-')[1].split('.png')[0]))
+  const outDir = OUT_PATH;
+  if(fs.existsSync(outDir)) {
+    fs.readdirSync(outDir)
+      .forEach(val => process.umlDiagrams.add(val.split('diagram-')[1].split('.png')[0]));
+  }
 
   function uml(state, startLine, endLine, silent) {
     let nextLine; let markup; let params; let token; let i;
