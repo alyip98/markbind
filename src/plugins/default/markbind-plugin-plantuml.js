@@ -3,26 +3,29 @@ const md = require('./../../lib/markbind/src/lib/markdown-it');
 const crypto = require('crypto');
 const fs = require('fs');
 const tmp = require('tmp');
+const path = require('path');
 const { exec } = require('child_process');
 
 const JAR_PATH = `${__dirname}\\plantuml.jar`;
-const OUT_PATH = 'out';
+const OUT_PATH = path.resolve('_site', 'diagrams');
+const URL_PREFIX = path.join('{{baseUrl}}', 'diagrams');
 
 /**
  * Parses PlantUML diagrams
  */
 function generateDiagram(umlCode) {
   const hash = crypto.createHash('md5').update(umlCode).digest('hex');
-  const outputFilePath = `${OUT_PATH}/diagram-${hash}.png`;
+  const fileName = `diagram-${hash}.png`;
+  const outputFilePath = `${OUT_PATH}/${fileName}`;
+  const imgSrc = `${URL_PREFIX}/${fileName}`;
   const cmd = `java -jar "${JAR_PATH}" -pipe > "${outputFilePath}"`;
 
   if (!process.umlDiagrams) {
     process.umlDiagrams = new Set();
   }
-
   // Skip generation if diagram already exists
   if (process.umlDiagrams.has(hash)) {
-    return outputFilePath;
+    return imgSrc;
   }
   process.umlDiagrams.add(hash);
   console.log('Generating diagram', hash);
@@ -53,18 +56,21 @@ function generateDiagram(umlCode) {
     }
   });
 
-  return outputFilePath;
+  return imgSrc;
 }
 
 module.exports = {
   preRender: (content) => {
     // console.log(content)
     const $ = cheerio.load(content, { xmlMode: false });
-    $('plantuml').each((i, tag) => {
+    $('uml').each((i, tag) => {
       const el = $(tag);
       const umlCode = el.text();
-      console.log('\n\n\n\n', umlCode, '\n\n\n\n');
-      // el.after(`<img src="${generateDiagram(umlCode)}"/>`);
+      // eslint-disable-next-line no-param-reassign
+      tag.name = 'img';
+      // eslint-disable-next-line no-param-reassign
+      tag.attribs.src = generateDiagram(umlCode);
+      el.text('');
     });
 
     // $('plantuml').remove();
