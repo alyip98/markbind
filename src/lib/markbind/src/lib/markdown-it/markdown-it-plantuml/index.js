@@ -1,12 +1,11 @@
 // Forked from https://github.com/deepelement/markdown-it-plantuml-offline
 const crypto = require('crypto');
 const fs = require('fs');
-const tmp = require('tmp');
 const { exec } = require('child_process');
 const path = require('path');
 
 const JAR_PATH = `${__dirname}\\plantuml.jar`;
-const OUT_PATH = path.resolve('_site', 'diagrams');
+const OUT_PATH = path.resolve('diagrams');
 const URL_PREFIX = path.join('{{baseUrl}}', 'diagrams');
 
 module.exports = function umlPlugin(md, options) {
@@ -22,7 +21,6 @@ module.exports = function umlPlugin(md, options) {
       return imgSrc;
     }
     process.umlDiagrams.add(hash);
-    console.log('Generating diagram', hash);
 
     const childProcess = exec(cmd);
 
@@ -66,13 +64,17 @@ module.exports = function umlPlugin(md, options) {
   // Track generated diagrams
   process.umlDiagrams = new Set();
   const outDir = OUT_PATH;
-  if(fs.existsSync(outDir)) {
-    fs.readdirSync(outDir)
-      .forEach(val => process.umlDiagrams.add(val.split('diagram-')[1].split('.png')[0]));
-  }
+  try {
+    if (fs.existsSync(outDir)) {
+      fs.readdirSync(outDir)
+        .forEach(val => process.umlDiagrams.add(val.split('diagram-')[1].split('.png')[0]));
+    }
+    // eslint-disable-next-line no-empty
+  } catch (_e) {}
+
 
   function uml(state, startLine, endLine, silent) {
-    let nextLine; let markup; let params; let token; let i;
+    let nextLine; let i;
     let autoClosed = false;
     let start = state.bMarks[startLine] + state.tShift[startLine];
     let max = state.eMarks[startLine];
@@ -84,12 +86,12 @@ module.exports = function umlPlugin(md, options) {
 
     // Check out the rest of the marker string
     //
-    for (i = 0; i < openMarker.length; ++i) {
+    for (i = 0; i < openMarker.length; i += 1) {
       if (openMarker[i] !== state.src[start + i]) { return false; }
     }
 
-    markup = state.src.slice(start, start + i);
-    params = state.src.slice(start + i, max);
+    const markup = state.src.slice(start, start + i);
+    const params = state.src.slice(start + i, max);
 
     // Since start is found, we can report success here in validation mode
     //
@@ -100,7 +102,7 @@ module.exports = function umlPlugin(md, options) {
     nextLine = startLine;
 
     for (;;) {
-      nextLine++;
+      nextLine += 1;
       if (nextLine >= endLine) {
         // unclosed block should be autoclosed by end of document.
         // also block seems to be autoclosed by end of parent
@@ -119,22 +121,25 @@ module.exports = function umlPlugin(md, options) {
 
       if (closeChar !== state.src.charCodeAt(start)) {
         // didn't find the closing fence
+        // eslint-disable-next-line no-continue
         continue;
       }
 
       if (state.sCount[nextLine] > state.sCount[startLine]) {
         // closing fence should not be indented with respect of opening fence
+        // eslint-disable-next-line no-continue
         continue;
       }
 
-      for (i = 0; i < closeMarker.length; ++i) {
+      for (i = 0; i < closeMarker.length; i += 1) {
         if (closeMarker[i] !== state.src[start + i]) { return false; }
       }
 
       // make sure tail has spaces only
-      if (state.skipSpaces(start + i) < max) {
-        continue;
-      }
+      // disabled since @end*
+      // if (state.skipSpaces(start + i) < max) {
+      //   continue;
+      // }
 
       // found!
       autoClosed = true;
@@ -143,7 +148,7 @@ module.exports = function umlPlugin(md, options) {
 
     const contents = state.src
       .split('\n')
-      .slice(startLine + 1, nextLine)
+      .slice(startLine, nextLine + 1)
       .join('\n');
 
     // We generate a token list for the alt property, to mimic what the image parser does.
@@ -157,7 +162,7 @@ module.exports = function umlPlugin(md, options) {
       altToken,
     );
 
-    token = state.push('uml_diagram', 'img', 0);
+    const token = state.push('uml_diagram', 'pic', 0);
     // alt is constructed from children. No point in populating it here.
     token.attrs = [
       ['src', generateSource(contents)],
@@ -169,6 +174,7 @@ module.exports = function umlPlugin(md, options) {
     token.map = [startLine, nextLine];
     token.markup = markup;
 
+    // eslint-disable-next-line no-param-reassign
     state.line = nextLine + (autoClosed ? 1 : 0);
 
     return true;

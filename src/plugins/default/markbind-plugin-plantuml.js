@@ -61,13 +61,15 @@ function generateDiagram(umlCode) {
 
 module.exports = {
   preRender: (content) => {
-    // console.log(content)
+    return content;
     const $ = cheerio.load(content, { xmlMode: false });
+    console.log(content);
     $('uml').each((i, tag) => {
       const el = $(tag);
       const umlCode = el.text();
+      console.log('\n', umlCode);
       // eslint-disable-next-line no-param-reassign
-      tag.name = 'img';
+      tag.name = 'pic';
       // eslint-disable-next-line no-param-reassign
       tag.attribs.src = generateDiagram(umlCode);
       el.text('');

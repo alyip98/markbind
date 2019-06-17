@@ -695,7 +695,10 @@ Site.prototype.generate = function (baseUrl) {
   // Clean the output folder; create it if not exist.
   fs.emptydirSync(this.outputPath);
   // Create a subdirectory for uml diagrams
-  fs.mkdirSync(path.resolve(this.outputPath, 'diagrams'));
+  try {
+    fs.mkdirSync(path.resolve('diagrams'));
+    // eslint-disable-next-line no-empty
+  } catch (_e) {}
   logger.info(`Website generation started at ${startTime.toLocaleTimeString()}`);
   return new Promise((resolve, reject) => {
     this.readSiteConfig(baseUrl)
