@@ -1,81 +1,70 @@
 const cheerio = module.parent.require('cheerio');
-const md = require('./../../lib/markbind/src/lib/markdown-it');
-const crypto = require('crypto');
 const fs = require('fs');
-const tmp = require('tmp');
 const path = require('path');
 const { exec } = require('child_process');
 
-const JAR_PATH = `${__dirname}\\plantuml.jar`;
-const OUT_PATH = path.resolve('_site', 'diagrams');
-const URL_PREFIX = path.join('{{baseUrl}}', 'diagrams');
+const JAR_PATH = path.resolve(__dirname, 'plantuml.jar');
 
 /**
  * Parses PlantUML diagrams
  */
-function generateDiagram(umlCode) {
-  const hash = crypto.createHash('md5').update(umlCode).digest('hex');
-  const fileName = `diagram-${hash}.png`;
-  const outputFilePath = `${OUT_PATH}/${fileName}`;
-  const imgSrc = `${URL_PREFIX}/${fileName}`;
-  const cmd = `java -jar "${JAR_PATH}" -pipe > "${outputFilePath}"`;
+function generateDiagram(src) {
+  const diagramSrc = path.join('puml', src.replace('.puml', '.png'))
+  const outputFilePath = path.resolve(diagramSrc);
+  const outputDir = path.dirname(outputFilePath);
 
-  if (!process.umlDiagrams) {
-    process.umlDiagrams = new Set();
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
   }
-  // Skip generation if diagram already exists
-  if (process.umlDiagrams.has(hash)) {
-    return imgSrc;
-  }
-  process.umlDiagrams.add(hash);
-  console.log('Generating diagram', hash);
-
-  const childProcess = exec(cmd);
-
-  childProcess.stdin.write(
-    umlCode,
-    (e) => {
-      if (e) {
-        throw (e);
-      }
-      childProcess.stdin.end();
-    },
-  );
-
-  childProcess.on('error', (error) => {
-    throw error;
-  });
-
-  childProcess.stderr.on('data', (data) => {
-    throw new Error(`stderr: ${data}`);
-  });
-
-  childProcess.on('close', (code) => {
-    if (code !== 0) {
-      throw new Error(`${cmd} exited with code ${code}`);
+  fs.readFile(src, (err, data) => {
+    if (err) {
+      throw err;
     }
+
+    const umlCode = data.toString();
+
+    const cmd = `java -jar "${JAR_PATH}" -pipe > "${path.resolve('_site', outputFilePath)}"`;
+    const childProcess = exec(cmd);
+
+    childProcess.stdin.write(
+      umlCode,
+      (e) => {
+        if (e) {
+          throw (e);
+        }
+        childProcess.stdin.end();
+      },
+    );
+
+    childProcess.on('error', (error) => {
+      throw error;
+    });
+
+    childProcess.stderr.on('data', (error) => {
+      throw new Error(`stderr: ${error}`);
+    });
+
+    childProcess.on('close', (code) => {
+      if (code !== 0) {
+        throw new Error(`${cmd} exited with code ${code}`);
+      }
+    });
   });
 
-  return imgSrc;
+  return diagramSrc;
 }
 
 module.exports = {
   preRender: (content) => {
-    return content;
     const $ = cheerio.load(content, { xmlMode: false });
-    console.log(content);
-    $('uml').each((i, tag) => {
-      const el = $(tag);
-      const umlCode = el.text();
-      console.log('\n', umlCode);
+    $('puml').each((i, tag) => {
       // eslint-disable-next-line no-param-reassign
       tag.name = 'pic';
+      const { src } = tag.attribs;
       // eslint-disable-next-line no-param-reassign
-      tag.attribs.src = generateDiagram(umlCode);
-      el.text('');
+      tag.attribs.src = generateDiagram(src);
     });
 
-    // $('plantuml').remove();
     return $.html();
   },
 };
