@@ -7,15 +7,20 @@ const JAR_PATH = path.resolve(__dirname, 'plantuml.jar');
 
 /**
  * Parses PlantUML diagrams
+ * Replaces <puml> tags with <pic> tags with the appropriate src attribute
  */
 function generateDiagram(src) {
-  const diagramSrc = path.join('puml', src.replace('.puml', '.png'))
+  // Output path for path/to/diagram.puml is puml/path/to/diagram.png
+  const diagramSrc = path.join('puml', src.replace('.puml', '.png'));
   const outputFilePath = path.resolve(diagramSrc);
   const outputDir = path.dirname(outputFilePath);
 
+  // Creates output dir if it doesn't exist
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
   }
+
+  // Read diagram file
   fs.readFile(src, (err, data) => {
     if (err) {
       throw err;
@@ -23,7 +28,8 @@ function generateDiagram(src) {
 
     const umlCode = data.toString();
 
-    const cmd = `java -jar "${JAR_PATH}" -pipe > "${path.resolve('_site', outputFilePath)}"`;
+    const cmd = `java -jar "${JAR_PATH}" -pipe > "${path.resolve('_site', outputFilePath)}"
+    -checkmetadata`;
     const childProcess = exec(cmd);
 
     childProcess.stdin.write(
