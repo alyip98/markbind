@@ -1,45 +1,48 @@
-// Process block-level uml diagrams
 // Forked from https://github.com/deepelement/markdown-it-plantuml-offline
-
 const crypto = require('crypto');
 const fs = require('fs');
 const tmp = require('tmp');
-const exec = require('child_process').exec;
-// const imageDataURI = require('image-data-uri');
-// const puml = require('./plantUml');
+const { exec } = require('child_process');
 
 const JAR_PATH = `${__dirname}\\plantuml.jar`;
-const OUT_PATH = "out";
+const OUT_PATH = 'out';
 
 module.exports = function umlPlugin(md, options) {
-
   function generateSourceDefault(umlCode) {
     const hash = crypto.createHash('md5').update(umlCode).digest('hex');
     const outputFilePath = `${OUT_PATH}/diagram-${hash}.png`;
     const cmd = `java -jar "${JAR_PATH}" -pipe > "${outputFilePath}"`;
-    const process = exec(cmd);
 
-    process.stdin.write(
+    // Skip generation if diagram already exists
+    if (process.umlDiagrams.has(hash)) {
+      return outputFilePath;
+    }
+    process.umlDiagrams.add(hash);
+    console.log('Generating diagram', hash);
+
+    const childProcess = exec(cmd);
+
+    childProcess.stdin.write(
       umlCode,
-      e => {
+      (e) => {
         if (e) {
           throw (e);
         }
-        process.stdin.end();
-      }
+        childProcess.stdin.end();
+      },
     );
 
-    process.on('error', (error) => {
-      throw (error);
+    childProcess.on('error', (error) => {
+      throw error;
     });
 
-    process.stderr.on('data', (data) => {
-      throw (new Error(`stderr: ${data}`));
+    childProcess.stderr.on('data', (data) => {
+      throw new Error(`stderr: ${data}`);
     });
 
-    process.on('close', (code) => {
+    childProcess.on('close', (code) => {
       if (code !== 0) {
-        throw (new Error(`${cmd} exited with code ${code}`));
+        throw new Error(`${cmd} exited with code ${code}`);
       }
     });
 
@@ -56,11 +59,15 @@ module.exports = function umlPlugin(md, options) {
   const generateSource = options.generateSource || generateSourceDefault;
   const render = options.render || md.renderer.rules.image;
 
+  // Track generated diagrams
+  process.umlDiagrams = new Set();
+  fs.readdirSync(OUT_PATH).forEach(val => process.umlDiagrams.add(val.split('diagram-')[1].split('.png')[0]))
+
   function uml(state, startLine, endLine, silent) {
-    var nextLine, markup, params, token, i,
-      autoClosed = false,
-      start = state.bMarks[startLine] + state.tShift[startLine],
-      max = state.eMarks[startLine];
+    let nextLine; let markup; let params; let token; let i;
+    let autoClosed = false;
+    let start = state.bMarks[startLine] + state.tShift[startLine];
+    let max = state.eMarks[startLine];
 
     // Check out the first character quickly,
     // this should filter out most of non-uml blocks
@@ -126,27 +133,27 @@ module.exports = function umlPlugin(md, options) {
       break;
     }
 
-    var contents = state.src
+    const contents = state.src
       .split('\n')
       .slice(startLine + 1, nextLine)
       .join('\n');
 
     // We generate a token list for the alt property, to mimic what the image parser does.
-    var altToken = [];
+    const altToken = [];
     // Remove leading space if any.
-    var alt = params ? params.slice(1) : 'uml diagram';
+    const alt = params ? params.slice(1) : 'uml diagram';
     state.md.inline.parse(
       alt,
       state.md,
       state.env,
-      altToken
+      altToken,
     );
 
     token = state.push('uml_diagram', 'img', 0);
     // alt is constructed from children. No point in populating it here.
     token.attrs = [
       ['src', generateSource(contents)],
-      ['alt', '']
+      ['alt', ''],
     ];
     token.block = true;
     token.children = altToken;
@@ -160,7 +167,8 @@ module.exports = function umlPlugin(md, options) {
   }
 
   md.block.ruler.before('fence', 'uml_diagram', uml, {
-    alt: [ 'paragraph', 'reference', 'blockquote', 'list' ]
+    alt: ['paragraph', 'reference', 'blockquote', 'list'],
   });
+  // eslint-disable-next-line no-param-reassign
   md.renderer.rules.uml_diagram = render;
 };
