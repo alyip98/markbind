@@ -12,7 +12,6 @@ jobs:
         node-version: [12.x]
 
     steps:
-      - run: mkdir main_repo && cd main_repo
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
@@ -39,13 +38,7 @@ jobs:
           name: output
           path: docs/_site
       - name: Checkout gh-pages repo
-        uses: actions/checkout@v2
-        with:
-          repository: alyip98/GH-Actions-Test
-          token: ${{ secrets.GH_PAGES_PERSONAL_TOKEN }}
-          # Relative path under $GITHUB_WORKSPACE to place the repository
-          path: 'gh-pages'
-      - run: pwd && ls
+        run: git clone https://${{ secrets.GH_PAGES_PERSONAL_TOKEN }}@github.com/alyip98/GH-Actions-Test.git gh-pages
       - run: cp -r docs/_site gh-pages/${{ github.sha }}
       - run: cd gh-pages && ls
       - run: git config user.email "you@example.com" && git config user.name "GH Actions"
