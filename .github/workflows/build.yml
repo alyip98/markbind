@@ -23,7 +23,7 @@ jobs:
           path: markbind
       - name: Install Node Modules
         run: cd $GITHUB_WORKSPACE/markbind && npm ci
-      - run: cd $GITHUB_WORKSPACE/markbind && pwd && git log
+      - run: cd $GITHUB_WORKSPACE/markbind && pwd && ls -A
 #      - run: npm run build --if-present
 #      - run: npm test
       - name: Build Docs
@@ -39,7 +39,7 @@ jobs:
         with:
           repo: alyip98/GH-Actions-Test
           path: gh-pages
-      - run: cd $GITHUB_WORKSPACE/gh-pages && pwd && git log
+      - run: cd $GITHUB_WORKSPACE/gh-pages && pwd && ls -A
       - run: cp -r markbind/docs/_site gh-pages/${{ github.sha }}
       - run: cd gh-pages && ls && git config user.email "you@example.com" && git config user.name "GH Actions" && git add . && git commit -m "Update built site for ${{ github.sha }}"
-      - run: cd gh-pages && git push
+#      - run: cd gh-pages && git push
