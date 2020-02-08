@@ -44,5 +44,5 @@ jobs:
           path: 'gh-pages'
       - run: pwd && ls
       - run: cp -r docs/_site gh-pages/${{ github.sha }}
-      - run: ls gh-pages
-
+      - run: cd gh-pages && ls
+      - run: git add . && git commit -m "Update built site for ${{ github.sha }}" && git push
