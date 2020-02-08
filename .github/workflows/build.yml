@@ -37,7 +37,7 @@ jobs:
 #        run: git clone https://${{ secrets.GH_PAGES_PERSONAL_TOKEN }}@github.com/alyip98/GH-Actions-Test.git gh-pages
       - uses: actions/checkout@v2
         with:
-          repo: alyip98/GH-Actions-Test
+          repository: alyip98/GH-Actions-Test
           path: gh-pages
       - run: cd $GITHUB_WORKSPACE/gh-pages && pwd && ls -A
       - run: cp -r markbind/docs/_site gh-pages/${{ github.sha }}
