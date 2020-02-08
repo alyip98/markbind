@@ -26,7 +26,9 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
-      - run: npm ci
+      - name: Install Node Modules
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
 #      - run: npm run build --if-present
 #      - run: npm test
       - name: Build Docs
@@ -44,7 +46,7 @@ jobs:
           # Relative path under $GITHUB_WORKSPACE to place the repository
           path: 'gh-pages'
       - run: pwd && ls
-      - run: cp -r docs/_site ../gh-pages/${{ github.sha }}
-      - run: cd ../gh-pages && ls
+      - run: cp -r docs/_site gh-pages/${{ github.sha }}
+      - run: cd gh-pages && ls
       - run: git config user.email "you@example.com" && git config user.name "GH Actions"
       - run: git add . && git commit -m "Update built site for ${{ github.sha }}" && git push
