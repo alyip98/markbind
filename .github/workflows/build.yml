@@ -42,6 +42,7 @@ jobs:
           token: ${{ secrets.GH_PAGES_PERSONAL_TOKEN }}
           # Relative path under $GITHUB_WORKSPACE to place the repository
           path: 'gh-pages'
+      - run: pwd && ls
       - run: cp -r docs/_sites gh-pages/${{ github.sha }}
       - run: ls gh-pages
 
