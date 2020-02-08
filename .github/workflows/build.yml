@@ -39,6 +39,7 @@ jobs:
         with:
           repository: alyip98/GH-Actions-Test
           path: gh-pages
+          token: ${{ secrets.GITHUB_PAGES_PERSONAL_TOKEN }}
       - run: cd $GITHUB_WORKSPACE/gh-pages && pwd && ls -A
       - run: cp -r markbind/docs/_site gh-pages/${{ github.sha }}
       - run: cd gh-pages && ls && git config user.email "you@example.com" && git config user.name "GH Actions" && git add . && git commit -m "Update built site for ${{ github.sha }}"
