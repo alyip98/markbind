@@ -31,7 +31,7 @@ jobs:
         env:
           CI: true
       - name: Build Docs
-        run: markbind build docs/
+        run: node index build docs
       - name: Archive Docs
         uses: actions/upload-artifact@v1
         with:
