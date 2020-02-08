@@ -30,7 +30,7 @@ jobs:
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
       - name: Install Node Modules
-        if: steps.cache.outputs.cache-hit != 'true'
+#        if: steps.cache.outputs.cache-hit != 'true'
         run: cd $GITHUB_WORKSPACE/markbind && npm ci
 #      - run: npm run build --if-present
 #      - run: npm test
