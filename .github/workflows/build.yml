@@ -15,22 +15,13 @@ jobs:
       - uses: actions/checkout@v2
         with:
           path: markbind
+          persist-credentials: false
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
           path: markbind
-      - name: Cache Node.js modules
-        uses: actions/cache@v1
-        id: cache
-        with:
-          path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
-          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-node-
-            ${{ runner.OS }}-
       - name: Install Node Modules
-#        if: steps.cache.outputs.cache-hit != 'true'
         run: cd $GITHUB_WORKSPACE/markbind && npm ci
 #      - run: npm run build --if-present
 #      - run: npm test
