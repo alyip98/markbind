@@ -27,11 +27,11 @@ jobs:
 #      - run: npm test
       - name: Build Docs
         run: cd $GITHUB_WORKSPACE/markbind && node index build docs
-#      - name: Archive Docs
-#        uses: actions/upload-artifact@v1
-#        with:
-#          name: output
-#          path: docs/_site
+      - name: Archive Docs
+        uses: actions/upload-artifact@v1
+        with:
+          name: output
+          path: markbind/docs/_site
 #      - name: Checkout gh-pages repo
 #        run: git clone https://${{ secrets.GH_PAGES_PERSONAL_TOKEN }}@github.com/alyip98/GH-Actions-Test.git gh-pages
 #      - uses: actions/checkout@v2
