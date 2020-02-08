@@ -41,8 +41,9 @@ jobs:
           repository: alyip98/GH-Actions-Test
           token: ${{ secrets.GH_PAGES_PERSONAL_TOKEN }}
           # Relative path under $GITHUB_WORKSPACE to place the repository
-          path: 'gh-pages'
+          path: '../gh-pages'
       - run: pwd && ls
-      - run: cp -r docs/_site gh-pages/${{ github.sha }}
-      - run: cd gh-pages && ls
+      - run: cp -r docs/_site ../gh-pages/${{ github.sha }}
+      - run: cd ../gh-pages && ls
+      - run: git config user.email "you@example.com" && git config user.name "GH Actions"
       - run: git add . && git commit -m "Update built site for ${{ github.sha }}" && git push
