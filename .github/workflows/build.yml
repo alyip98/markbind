@@ -13,8 +13,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-          with:
-            path: markbind
+        with:
+          path: markbind
       - run: cd markbind
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
@@ -43,9 +43,9 @@ jobs:
 #      - name: Checkout gh-pages repo
 #        run: git clone https://${{ secrets.GH_PAGES_PERSONAL_TOKEN }}@github.com/alyip98/GH-Actions-Test.git gh-pages
       - uses: actions/checkout@v2
-          with:
-            repo: alyip98/GH-Actions-Test
-            path: gh-pages
+        with:
+          repo: alyip98/GH-Actions-Test
+          path: gh-pages
       - run: cp -r docs/_site gh-pages/${{ github.sha }}
       - run: cd gh-pages && ls
       - run: git config user.email "you@example.com" && git config user.name "GH Actions"
