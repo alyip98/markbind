@@ -33,12 +33,12 @@ jobs:
         uses: ./markbind/.github/actions/test
         id: baseurl
         with:
-          file: "site.json"
+          file: "markbind/docs/site.json"
           key: "baseUrl"
           value: ${{ env.PAGES_URL }}/${{ github.sha }}
 
       - name: Modified Site.json
-        run: echo "The time was ${{ steps.baseurl.outputs.obj }}"
+        run: echo "${{ steps.baseurl.outputs.obj }}"
 
       - name: Build Docs
         run: cd $GITHUB_WORKSPACE/markbind/docs && node ../index build
