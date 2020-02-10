@@ -1,13 +1,21 @@
-name: 'Hello World'
-description: 'Greet someone and record the time'
+name: 'Edit JSON'
+description: 'Updates a key value pair of a file'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  file:
+    description: 'JSON file to update'
     required: true
-    default: 'World'
+    default: 'test.json'
+  key:
+    description: 'Key to set'
+    required: true
+    default: 'test'
+  value:
+    description: 'Value to set'
+    required: true
+    default: 'value'
 outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+  obj:
+    description: 'JSON object after modification'
 runs:
   using: 'node12'
   main: 'index.js'
