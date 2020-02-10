@@ -1,6 +1,6 @@
 name: Github Pages Preview
 
-on: [pull] # Temporarily disable
+on: [pull_request] # Temporarily disable
 
 jobs:
   build:
