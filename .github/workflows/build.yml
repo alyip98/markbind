@@ -25,7 +25,7 @@ jobs:
         run: cd $GITHUB_WORKSPACE/markbind && npm ci
 #      - run: npm run build --if-present
 #      - run: npm test
-      - # TODO: Modify baseUrl in site config file
+      # TODO: Modify baseUrl in site config file
       - name: Build Docs
         run: cd $GITHUB_WORKSPACE/markbind/docs && node ../index build
       - name: Archive Docs
