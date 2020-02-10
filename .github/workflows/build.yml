@@ -30,7 +30,7 @@ jobs:
         run: cd $GITHUB_WORKSPACE/markbind && npm ci
 
       - name: Set BaseURL
-        uses: markbind/.github/actions/test
+        uses: ./markbind/.github/actions/test
         id: baseurl
         with:
           file: "site.json"
