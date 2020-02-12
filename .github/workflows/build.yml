@@ -3,7 +3,7 @@ name: Github Pages Preview
 on: [push] # Temporarily disable
 
 env:
-  PAGES_URL: https://alyip98.github.io/GH-Actions-Test/
+  PAGES_URL: https://alyip98.github.io/GH-Actions-Test
 
 jobs:
   build:
@@ -30,15 +30,15 @@ jobs:
         run: cd $GITHUB_WORKSPACE/markbind && npm ci
 
       - name: Set BaseURL
-        uses: ./markbind/.github/actions/test
-        id: baseurl
+        uses: ./markbind/.github/actions/setBaseUrl
+        id: setBaseUrl
         with:
           file: "markbind/docs/site.json"
           key: "baseUrl"
           value: ${{ env.PAGES_URL }}/${{ github.sha }}
 
-      - name: Modified Site.json
-        run: echo "${{ steps.baseurl.outputs.obj }}"
+      - name: Modified Site.json (testing)
+        run: echo "${{ steps.setBaseUrl.outputs.obj }}"
 
       - name: Build Docs
         run: cd $GITHUB_WORKSPACE/markbind/docs && node ../index build

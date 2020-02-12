@@ -1,0 +1,14 @@
+name: 'Set Status'
+description: 'Updates a key value pair of a file'
+inputs:
+  hash:
+    description: 'Commit hash'
+    required: true
+  status:
+    description: 'Status'
+    required: true
+runs:
+  using: 'node12'
+  main: 'index.js'
+  post: 'post.js'
+  post-if: success()
