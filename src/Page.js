@@ -930,16 +930,15 @@ class Page {
   /**
    * Entry point for plugin pre-render
    */
-  preRender(content) {
+  async preRender(content) {
     let preRenderedContent = content;
-    Object.entries(this.plugins)
-      .forEach(([pluginName, plugin]) => {
-        if (plugin.preRender) {
-          preRenderedContent
-            = plugin.preRender(preRenderedContent, this.pluginsContext[pluginName] || {},
-                               this.frontMatter, this.getPluginConfig());
-        }
-      });
+    for (const [pluginName, plugin] of Object.entries(this.plugins)) {
+      if (plugin.preRender) {
+        preRenderedContent
+          = await plugin.preRender(preRenderedContent, this.pluginsContext[pluginName] || {},
+                                   this.frontMatter, this.getPluginConfig());
+      }
+    }
     return preRenderedContent;
   }
 
