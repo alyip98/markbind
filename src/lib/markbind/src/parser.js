@@ -1,7 +1,8 @@
 const cheerio = require('cheerio');
 const fs = require('fs');
 const htmlparser = require('htmlparser2'); require('./patches/htmlparser2');
-const nunjucks = require('nunjucks');
+const nunjucks = require('nunjucks').configure()
+  .addExtension("DateExtension", require('./lib/nunjucks-extensions/nunjucks-date'));
 const path = require('path');
 const Promise = require('bluebird');
 const slugify = require('@sindresorhus/slugify');
