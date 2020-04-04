@@ -352,7 +352,6 @@ li.footnote-item:target {
 
 .hljs:not(.inline) > span {
     display: block;
-    height: 1.5em;
 }
 
 .hljs:not(.inline):not(.no-line-numbers) > span {
