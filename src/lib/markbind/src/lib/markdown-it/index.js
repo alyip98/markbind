@@ -86,7 +86,7 @@ markdownIt.renderer.rules.fence = (tokens, idx, options, env, slf) => {
     // counter is incremented on each span, so we need to subtract 1
     token.attrJoin('style', `counter-reset: line ${startFromZeroBased};`);
   }
-  
+
   const highlightLinesInput = getAttributeAndDelete(token, 'highlight-lines');
   let lineNumbersAndRanges = [];
   if (highlightLinesInput) {
@@ -104,13 +104,13 @@ markdownIt.renderer.rules.fence = (tokens, idx, options, env, slf) => {
     }
     lineNumbersAndRanges = highlightLines.map(elem => elem.split('-').map(parseAndZeroBaseLineNumber));
   }
-  
+
   lines.pop(); // last line is always a single '\n' newline, so we remove it
   // wrap all lines with <span> so we can number them
   str = lines.map((line, index) => {
     const currentLineNumber = index + 1;
     // check if there is at least one range or line number that matches the current line number
-    // Note: The algorithm is based off markdown-it-highlight-lines (https://github.com/egoist/markdown-it-highlight-lines/blob/master/src/index.js) 
+    // Note: The algorithm is based off markdown-it-highlight-lines (https://github.com/egoist/markdown-it-highlight-lines/blob/master/src/index.js)
     //       This is an O(n^2) solution wrt to the number of lines
     //       I opt to use this approach because it's simple, and it is unlikely that the number of elements in `lineNumbersAndRanges` will be large
     //       There is possible room for improvement for a more efficient algo that is O(n).
@@ -121,9 +121,9 @@ markdownIt.renderer.rules.fence = (tokens, idx, options, env, slf) => {
       return currentLineNumber === start;
     });
     if (inRange) {
-      return `<span class="highlighted">${line}</span><br>`;
+      return `<span class="highlighted">${line}</span>`;
     }
-    return `<span>${line}</span><br>`;
+    return `<span>${line}</span>`;
   }).join('');
 
   token.attrJoin('class', 'hljs');
